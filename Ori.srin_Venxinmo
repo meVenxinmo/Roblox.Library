@@ -100,7 +100,6 @@ function Library:CreateWindow(config)
             Color3.fromRGB(128, 0, 128)
         }
 
-        local gridHolder = Instance.new("UIGridLayout", Instance.new("Frame", PickerFrame))
         local grid = Instance.new("Frame", PickerFrame)
         grid.Size = UDim2.new(1, -16, 1, -45)
         grid.Position = UDim2.new(0, 8, 0, 38)
