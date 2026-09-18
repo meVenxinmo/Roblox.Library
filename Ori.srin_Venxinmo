@@ -8,8 +8,8 @@ local Library = {}
 function Library:CreateWindow(config)
     config = config or {}
     
-    local brandPrefix = "Venxinmo | "
-    local customTitle = config.Title or "Dynamic Menu"
+    local brandPrefix = "VENXINMO | "
+    local customTitle = config.Title and string.upper(config.Title) or "DYNAMIC MENU"
     local titleText = brandPrefix .. customTitle
 
     local enableLoading = config.Loading or false
@@ -32,7 +32,7 @@ function Library:CreateWindow(config)
             end
         end)
         topbar.InputChanged:Connect(function(input)
-            if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end
+            if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then dragInput = input end
         end)
         UserInputService.InputChanged:Connect(function(input)
             if input == dragInput and dragging then
@@ -87,7 +87,7 @@ function Library:CreateWindow(config)
         local LoadingText = Instance.new("TextLabel", LoadingFrame)
         LoadingText.Size = UDim2.new(1, 0, 1, 0)
         LoadingText.BackgroundTransparency = 1
-        LoadingText.Text = "Menu loading..."
+        LoadingText.Text = "MENU LOADING..."
         LoadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
         LoadingText.TextSize = 14
         LoadingText.Font = Enum.Font.GothamBold
@@ -132,14 +132,14 @@ function Library:CreateWindow(config)
     CloseMenuButton.ZIndex = 2
     Instance.new("UICorner", CloseMenuButton).CornerRadius = UDim.new(0, 5)
 
-    local ToggleMenuButton = Instance.new("TextButton", TopBar)
-    ToggleMenuButton.Size = UDim2.new(0, 28, 0, 28)
-    ToggleMenuButton.Position = UDim2.new(1, -68, 0, 5)
-    ToggleMenuButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    ToggleMenuButton.Text = "-"
-    ToggleMenuButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+    local ToggleMenuButton = Instance.new("ImageButton", TopBar)
+    ToggleMenuButton.Size = UDim2.new(0, 22, 0, 22)
+    ToggleMenuButton.Position = UDim2.new(1, -68, 0, 8)
+    ToggleMenuButton.BackgroundTransparency = 1
+    ToggleMenuButton.Image = "rbxassetid://6031280883"
+    ToggleMenuButton.ImageColor3 = Color3.fromRGB(200, 200, 200)
     ToggleMenuButton.ZIndex = 2
-    Instance.new("UICorner", ToggleMenuButton).CornerRadius = UDim.new(0, 5)
+    ToggleMenuButton.Rotation = 0
 
     local ContainerHolder = Instance.new("Frame", MainFrame)
     ContainerHolder.Size = UDim2.new(1, 0, 1, -38)
@@ -162,15 +162,16 @@ function Library:CreateWindow(config)
         
         if menuVisible then
             ContainerHolder.Visible = true
+            TweenService:Create(ToggleMenuButton, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 0}):Play()
             TweenService:Create(MainFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 500, 0, 350)}):Play()
         else
+            TweenService:Create(ToggleMenuButton, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Rotation = 90}):Play()
             TweenService:Create(MainFrame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, collapsedWidth, 0, 38)}):Play()
             task.wait(0.25)
             if not menuVisible then
                 ContainerHolder.Visible = false
             end
         end
-        ToggleMenuButton.Text = menuVisible and "-" or "+"
     end)
 
     local TabBar = Instance.new("ScrollingFrame", ContainerHolder)
@@ -192,6 +193,15 @@ function Library:CreateWindow(config)
     local Tabs = {}
     local FirstTab = true
 
+    local Icons = {
+        Settings = "rbxassetid://7072711070",
+        Home = "rbxassetid://6031075929",
+        Combat = "rbxassetid://6034503348",
+        Player = "rbxassetid://6034287525",
+        Visuals = "rbxassetid://6035047409",
+        Misc = "rbxassetid://6034502525"
+    }
+
     local WindowObj = {}
 
     function WindowObj:CreateTab(tabName, iconId)
@@ -207,40 +217,65 @@ function Library:CreateWindow(config)
             scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + 10)
         end)
 
+        local finalIcon = iconId
+        if not finalIcon then
+            local lowerName = string.lower(tabName)
+            if string.find(lowerName, "setting") or string.find(lowerName, "cài đặt") then
+                finalIcon = Icons.Settings
+            elseif string.find(lowerName, "home") or string.find(lowerName, "trang chủ") then
+                finalIcon = Icons.Home
+            elseif string.find(lowerName, "combat") or string.find(lowerName, "đánh") or string.find(lowerName, "pvp") then
+                finalIcon = Icons.Combat
+            elseif string.find(lowerName, "player") or string.find(lowerName, "người chơi") then
+                finalIcon = Icons.Player
+            elseif string.find(lowerName, "visual") or string.find(lowerName, "esp") then
+                finalIcon = Icons.Visuals
+            else
+                finalIcon = Icons.Misc
+            end
+        end
+
         local btn = Instance.new("TextButton", TabBar)
         btn.Size = UDim2.new(1, 0, 0, 34)
         btn.BackgroundColor3 = FirstTab and Color3.fromRGB(45, 45, 45) or Color3.fromRGB(26, 26, 26)
         btn.BackgroundTransparency = FirstTab and 0 or 0.5
-        btn.Text = "       " .. tabName
-        btn.TextColor3 = FirstTab and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(170, 170, 170)
-        btn.TextSize = 12
+        btn.Text = ""
         btn.Font = Enum.Font.GothamMedium
-        btn.TextXAlignment = Enum.TextXAlignment.Left
         Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-        
+
         local icon = Instance.new("ImageLabel", btn)
         icon.Size = UDim2.new(0, 16, 0, 16)
-        icon.Position = UDim2.new(0, 8, 0.5, -8)
+        icon.Position = UDim2.new(0, 10, 0.5, -8)
         icon.BackgroundTransparency = 1
-        icon.Image = iconId or "rbxassetid://6031094607"
+        icon.Image = finalIcon
         icon.ImageColor3 = FirstTab and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(170, 170, 170)
-        
+
+        local tabLabel = Instance.new("TextLabel", btn)
+        tabLabel.Size = UDim2.new(1, -34, 1, 0)
+        tabLabel.Position = UDim2.new(0, 32, 0, 0)
+        tabLabel.BackgroundTransparency = 1
+        tabLabel.Text = tabName
+        tabLabel.TextColor3 = FirstTab and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(170, 170, 170)
+        tabLabel.TextSize = 12
+        tabLabel.Font = Enum.Font.GothamMedium
+        tabLabel.TextXAlignment = Enum.TextXAlignment.Left
+
         btn.MouseButton1Click:Connect(function()
             for _, tabData in pairs(Tabs) do
                 tabData.Content.Visible = false
                 tabData.Button.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
                 tabData.Button.BackgroundTransparency = 0.5
-                tabData.Button.TextColor3 = Color3.fromRGB(170, 170, 170)
-                tabData.Button.ImageLabel.ImageColor3 = Color3.fromRGB(170, 170, 170)
+                tabData.Label.TextColor3 = Color3.fromRGB(170, 170, 170)
+                tabData.Icon.ImageColor3 = Color3.fromRGB(170, 170, 170)
             end
             scrollingFrame.Visible = true
             btn.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
             btn.BackgroundTransparency = 0
-            btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+            tabLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
             icon.ImageColor3 = Color3.fromRGB(255, 255, 255)
         end)
         
-        Tabs[tabName] = {Button = btn, Content = scrollingFrame, Icon = icon}
+        Tabs[tabName] = {Button = btn, Content = scrollingFrame, Icon = icon, Label = tabLabel}
         FirstTab = false
 
         local TabObj = {}
