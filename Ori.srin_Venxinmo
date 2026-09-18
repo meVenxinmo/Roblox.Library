@@ -97,7 +97,7 @@ function Library:CreateWindow(config)
             if LoadingFrame then
                 LoadingFrame:Destroy()
             end
-            task.wait(2)
+            task.wait(0.2)
             if MainFrame then
                 MainFrame.Visible = true
             end
@@ -194,12 +194,11 @@ function Library:CreateWindow(config)
     local FirstTab = true
 
     local Icons = {
-        Settings = "rbxassetid://7072711070",
-        Home = "rbxassetid://6031075929",
-        Combat = "rbxassetid://6034503348",
-        Player = "rbxassetid://6034287525",
-        Visuals = "rbxassetid://6035047409",
-        Misc = "rbxassetid://6034502525"
+        Settings = "rbxassetid://88996305176566",
+        Server = "rbxassetid://136012162623162",
+        Visuals = "rbxassetid://108576710102221",
+        Combat = "rbxassetid://73019317807270",
+        Booster = "rbxassetid://84491661167838"
     }
 
     local WindowObj = {}
@@ -222,16 +221,16 @@ function Library:CreateWindow(config)
             local lowerName = string.lower(tabName)
             if string.find(lowerName, "setting") or string.find(lowerName, "cài đặt") then
                 finalIcon = Icons.Settings
-            elseif string.find(lowerName, "home") or string.find(lowerName, "trang chủ") then
-                finalIcon = Icons.Home
+            elseif string.find(lowerName, "server") or string.find(lowerName, "máy chủ") or string.find(lowerName, "hop") then
+                finalIcon = Icons.Server
             elseif string.find(lowerName, "combat") or string.find(lowerName, "đánh") or string.find(lowerName, "pvp") then
                 finalIcon = Icons.Combat
-            elseif string.find(lowerName, "player") or string.find(lowerName, "người chơi") then
-                finalIcon = Icons.Player
             elseif string.find(lowerName, "visual") or string.find(lowerName, "esp") then
                 finalIcon = Icons.Visuals
+            elseif string.find(lowerName, "booster") or string.find(lowerName, "game") or string.find(lowerName, "fps") then
+                finalIcon = Icons.Booster
             else
-                finalIcon = Icons.Misc
+                finalIcon = Icons.Settings
             end
         end
 
