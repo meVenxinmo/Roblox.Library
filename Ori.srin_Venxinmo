@@ -198,7 +198,7 @@ function Library:CreateWindow(config)
         Server = "rbxassetid://136012162623162",
         Visuals = "rbxassetid://108576710102221",
         Combat = "rbxassetid://73019317807270",
-        Booster = "rbxassetid://84491661167838"
+        Booster = "rbxassetid://95012854943364"
     }
 
     local WindowObj = {}
@@ -227,7 +227,7 @@ function Library:CreateWindow(config)
                 finalIcon = Icons.Combat
             elseif string.find(lowerName, "visual") or string.find(lowerName, "esp") then
                 finalIcon = Icons.Visuals
-            elseif string.find(lowerName, "booster") or string.find(lowerName, "game") or string.find(lowerName, "fps") then
+            elseif string.find(lowerName, "booster") or string.find(lowerName, "game") or string.find(lowerName, "fps") or string.find(lowerName, "protect") or string.find(lowerName, "shield") then
                 finalIcon = Icons.Booster
             else
                 finalIcon = Icons.Settings
